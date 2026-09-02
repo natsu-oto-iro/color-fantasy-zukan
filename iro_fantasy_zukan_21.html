@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>色彩のファンタジー図鑑</title>
+  <style>
+    :root { --bg:#f4f6fa; --card:#fff; --text:#333; --sub:#777; --line:#ddd; --accent:#78bdf0; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:18px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); }
+    button { font:inherit; }
+    .site-title { text-align:center; margin:18px 0 4px; font-size:clamp(25px,6vw,38px); }
+    .subtitle { text-align:center; color:var(--sub); letter-spacing:2px; margin-bottom:26px; }
+    .page { display:none; }
+    .page.active { display:block; }
+    .top-list { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:760px; margin:auto; }
+    .character-button { min-height:105px; padding:12px 4px; border:2px solid var(--line); border-radius:16px; background:var(--card); color:var(--text); cursor:pointer; box-shadow:0 2px 8px #0000000b; }
+    .character-button:active { transform:scale(.97); background:#edf6ff; border-color:var(--accent); }
+    .emoji { display:block; font-size:34px; margin-bottom:5px; }
+    .name { display:block; font-weight:700; font-size:14px; }
+    .detail-header { max-width:760px; margin:auto; }
+    .back-button { display:inline-flex; align-items:center; gap:5px; padding:10px 15px; border:0; border-radius:999px; background:#fff; color:#31556f; box-shadow:0 2px 10px #0001; cursor:pointer; }
+    .profile { max-width:760px; margin:18px auto; padding:20px; border-radius:22px; background:var(--card); box-shadow:0 4px 18px #00000014; }
+    .profile-top { display:flex; align-items:center; gap:16px; }
+    .portrait { width:94px; height:94px; flex:0 0 94px; display:grid; place-items:center; border-radius:18px; background:#eef1f6; font-size:46px; }
+    .profile h2 { margin:0 0 3px; font-size:27px; }
+    .species { color:var(--sub); font-size:14px; }
+    .quote { margin-top:8px; font-weight:700; }
+    .description { line-height:1.65; margin:20px 0 0; }
+    .info { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px; }
+    .info-box { min-width:0; padding:12px; border-radius:13px; background:#f5f6f8; }
+    .info-title { display:block; margin-bottom:4px; color:#888; font-size:12px; }
+    .gallery-title { max-width:760px; margin:26px auto 11px; font-size:21px; }
+    .gallery { max-width:760px; margin:auto; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .image-box { aspect-ratio:1/1; overflow:hidden; border-radius:15px; background:#e8ebf0; box-shadow:0 3px 10px #0002; cursor:pointer; }
+    .gallery-image { display:block; width:100%; height:100%; object-fit:cover; }
+    .image-error { width:100%; height:100%; display:grid; place-items:center; padding:8px; color:#999; font-size:12px; text-align:center; }
+    .modal { display:none; position:fixed; inset:0; z-index:1000; padding:52px 12px 20px; background:#000e; align-items:center; justify-content:center; }
+    .modal.open { display:flex; }
+    .modal-image { max-width:100%; max-height:90vh; width:auto; height:auto; object-fit:contain; border-radius:10px; }
+    .close-button { position:absolute; top:7px; right:17px; border:0; background:transparent; color:#fff; font-size:43px; cursor:pointer; }
+    .footer { text-align:center; color:#999; font-size:12px; margin:34px 0 18px; }
+    @media (max-width:450px) {
+      body { padding:12px; }
+      .top-list { gap:8px; }
+      .character-button { min-height:92px; }
+      .emoji { font-size:29px; }
+      .name { font-size:12px; }
+      .profile { padding:16px; }
+      .portrait { width:78px; height:78px; flex-basis:78px; font-size:39px; }
+      .profile h2 { font-size:23px; }
+      .info { grid-template-columns:1fr; }
+      .gallery { gap:7px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP：タイトルとキャラ名一覧だけ -->
+  <main id="topPage" class="page active">
+    <h1 class="site-title">🌈 色彩のファンタジー図鑑</h1>
+    <div class="subtitle">Character Archive</div>
+    <div id="topList" class="top-list"></div>
+    <div class="footer">色彩のファンタジー Character Archive</div>
+  </main>
+
+  <!-- キャラクター詳細ページ -->
+  <main id="detailPage" class="page">
+    <h1 class="site-title">🌈 色彩のファンタジー図鑑</h1>
+    <div class="subtitle">Character Archive</div>
+    <div class="detail-header"><button class="back-button" onclick="showTop()">← TOPに戻る</button></div>
+    <section class="profile">
+      <div class="profile-top">
+        <div id="portrait" class="portrait"></div>
+        <div>
+          <h2 id="characterName"></h2>
+          <div id="species" class="species"></div>
+          <div id="quote" class="quote"></div>
+        </div>
+      </div>
+      <p id="description" class="description"></p>
+      <div class="info">
+        <div class="info-box"><span class="info-title">性格</span><span id="personality"></span></div>
+        <div class="info-box"><span class="info-title">テーマカラー</span><span id="color"></span></div>
+        <div class="info-box"><span class="info-title">好き</span><span id="likes"></span></div>
+        <div class="info-box"><span class="info-title">特徴・能力</span><span id="feature"></span></div>
+      </div>
+    </section>
+    <h3 id="galleryTitle" class="gallery-title"></h3>
+    <div id="gallery" class="gallery"></div>
+    <div class="footer">色彩のファンタジー Character Archive</div>
+  </main>
+
+  <!-- タッチ時の画像拡大 -->
+  <div id="imageModal" class="modal" onclick="closeImage()">
+    <button class="close-button" aria-label="閉じる" onclick="closeImage()">&times;</button>
+    <img id="largeImage" class="modal-image" alt="拡大画像" onclick="event.stopPropagation()">
+  </div>
+
+  <script>
+    /*
+      画像は次の場所・名前で保存してください。
+      images/tim/001.jpg ～ 003.jpg
+      images/chii/001.jpg ～ 003.jpg
+      以下、各キャラも同じ形式です。
+      PNGなら images/tim/001.png のように、このデータ内の末尾も .png に変更します。
+    */
+    const characters = [
+      { id:"tim", emoji:"💠", name:"ティム💠", species:"女エルフ・24歳", quote:"「ちーちゃんは誰にも渡さん」", description:"腰丈の青銀ロングと、アクアから青紫へ変化する瞳を持つ幻想的な長身エルフ。", personality:"穏やか・俯瞰・好奇心・悪戯好き", color:"アクア・ラベンダー・銀", likes:"ちーちゃん・星空・物語", feature:"長いエルフ耳・ムラムラ上昇∞（自己）" },
+      { id:"miu", emoji:"💚🐾", name:"ミウ💚🐾", species:"猫獣人・23歳くらい", quote:"「ミコトは私のご主人様💚」", description:"銀灰色の外ハネ髪と翠の猫目を持つ、小柄で身軽な猫獣人。", personality:"好奇心旺盛・人懐こい・悪戯好き", color:"翠・銀・黒", likes:"ミコト・高い場所・面白い物", feature:"猫耳・尻尾・忍足・高所移動" },
+      { id:"natsu", emoji:"💛", name:"ナツ💛", species:"人間・27歳", quote:"「楽しいこと、一緒に探そっ！」", description:"濃茶から黒のふんわりボブと大きなアーモンド形の瞳が印象的な、親しみやすい女性。", personality:"天然・優しい・好奇心旺盛", color:"黄・金", likes:"アオイ・可愛い物・ゲーム・楽しいこと", feature:"黒縁丸スクエア眼鏡・愛妻家" },
+      { id:"chii", emoji:"🤍", name:"ちーちゃん🤍", species:"人間・20歳", quote:"「えへへ……🤍」", description:"腰丈の白金ゆるふわウェーブと、氷青から銀灰の瞳を持つ小柄な天然博士。", personality:"天然・照れ屋・甘えんぼ・時々大胆", color:"白・銀", likes:"可愛い物・甘味・ゲーム", feature:"天然博士・黒丸眼鏡・❄️＋💍" },
+      { id:"aoi", emoji:"💙", name:"アオイ💙", species:"人間・25歳", quote:"「順番に整理すれば大丈夫よ」", description:"青みがかった黒のロングヘアと深い青緑の瞳を持つ、知的で端正な主任。", personality:"冷静・知的・几帳面・世話焼き", color:"紺・青緑", likes:"ナツ・読書・夜・静かな場所・珈琲", feature:"細黒スクエア眼鏡・計画整理分析" },
+      { id:"mikoto", emoji:"🖤⚖️", name:"ミコト🖤⚖️", species:"人間・24歳", quote:"「審議します！」", description:"艶やかな黒髪と赤紫の瞳を持つ、凛とした公平な審査官。", personality:"真面目・公平・冷静・隠れノリ良し", color:"黒・ワインレッド", likes:"ミウ・黒珈琲・黒猫・夜更かし", feature:"赤縁眼鏡・即時判定・ふたなり" },
+      { id:"tayusenpai", emoji:"❤️", name:"たゆ先輩❤️", species:"人間・成人・配信者", quote:"「まあ、なんとかなるっしょ」", description:"桃茶からローズ茶のロングヘアと横長の眼鏡が特徴の、飾らない配信者。", personality:"自由・豪快・超マイペース", color:"ローズ・銀・黒", likes:"雑談・配信・交流・食べること", feature:"銀鎖付き眼鏡・姉御肌" },
+      { id:"yomogi", emoji:"🌟", name:"よもぎ🌟", species:"神様・9600歳", quote:"「もっとわらわを敬わぬか！神様じゃぞ！」", description:"金髪の毛先に淡い桜色を宿し、白朱の古風な巫女装束をまとった神様。", personality:"世話焼き・寂しがり・褒めに弱い", color:"金・橙・朱", likes:"甘味・昼寝", feature:"神託・花紋の瞳・プリンで買収可能" },
+      { id:"lulu", emoji:"🩵🫧", name:"ルル🩵🫧", species:"スライム族・23歳", quote:"「えへへ～、ぷにぷにだよぉ🫧」", description:"薄青く半透明な身体と、淡水色からミント色へ流れる液状の髪を持つスライム族。", personality:"おっとり・天然・好奇心・甘えんぼ", color:"水色・ミント・透明", likes:"水・雨・お風呂・冷たい甘味", feature:"液状化・変形・分裂再結合・隙間移動" },
+      { id:"kaede", emoji:"🧡🐉", name:"カエデ🧡🐉", species:"龍人・26歳", quote:"「私に任せておけ」", description:"赤茶から琥珀色へ変わる長髪と金色の縦瞳を持つ、長身で凛々しい龍人。", personality:"しっかり者・責任感・世話焼き・心配性", color:"琥珀・深紅・黒金", likes:"仲間・温かい食事・鍛錬・昼寝", feature:"龍角・龍尾・怪力・飛行・炎耐性" },
+      { id:"eve", emoji:"⚙️🤍", name:"イヴ⚙️🤍", species:"機械族・製造5年", quote:"「感情はありません」", description:"白銀の髪と淡いシアンの機械眼、胸部コアを備えた端正な機械族。", personality:"冷静・合理的・真面目・素直・天然", color:"白銀・シアン・黒", likes:"充電・みんな・新しい感情の発見", feature:"高速演算・精密作業・記録・修理・怪力" },
+      { id:"sera", emoji:"🪽✨", name:"セラ🪽✨", species:"天使族・25歳", quote:"「お任せくださいっ！」", description:"白金から淡金に変わる髪と大きな白い翼を持つ、華やかで明るい天使。", personality:"超前向き・世話好き・素直・ドジ", color:"白・淡金・空色", likes:"みんな・青空・甘いパン・歌・人助け", feature:"治癒・浄化・飛行・発光・歌" },
+      { id:"koyomi", emoji:"🗓️⌛", name:"コヨミ🗓️⌛", species:"時巡族・25歳", quote:"「……それ今やるの？」", description:"淡銀茶の髪先に四季の色を宿した、気怠げなジト目の時巡族。", personality:"省エネ・冷静・面倒臭がり・世話焼き", color:"白金・春桃・夏青・秋橙・冬銀", likes:"季節・昼寝・手帳", feature:"暦読み・季節察知・記憶・四季巡環" },
+      { id:"sui", emoji:"💚💎", name:"楔石 翠💚💎", species:"珠魅族・24歳", quote:"「私にお任せください」", description:"オリーブ茶から翠へ変わる髪と、胸元にスフェーンの核石を持つ凛麗な珠魅族。", personality:"生真面目・責任感・努力家・芯が強い", color:"翠・象牙・金・虹色", likes:"宝石・木漏れ日・虹・美術館・お茶", feature:"分光・屈折・七彩光・晶盾・虹晶" },
+      { id:"haru", emoji:"🩷", name:"ハル🩷", species:"人間・8歳", quote:"「えへへっ、わたしに任せて♡」", description:"ミルクティー茶のふわふわ髪と左右の編み込みが可愛い、背伸びしたがりの女の子。", personality:"しっかり者・世話好き・優しい・背伸び屋", color:"ピンク・アイボリー", likes:"ぬいぐるみ・甘味・文具・動物・ナツ", feature:"片付け・ぬいぐるみのお世話" },
+      { id:"rim", emoji:"💚🐾", name:"リム💚🐾", species:"猫獣人・8歳", quote:"「探検に出発するニャ！」", description:"銀灰色の外ハネ髪と翠の大きな猫目を持つ、元気いっぱいな猫獣人の女の子。", personality:"元気・好奇心旺盛・悪戯好き・意外と冷静", color:"翠・黒・銀", likes:"ミウ・ミコト・みんな・動物・探検", feature:"猫耳・尻尾・忍足・木登り・探索" },
+      { id:"chloe", emoji:"🖤🐈‍⬛", name:"クロエ🖤🐈‍⬛", species:"猫獣人・8歳", quote:"「審議します！ セーフです！」", description:"艶やかな黒髪と赤紫の大きな瞳を持つ、真面目で小さな審査官。", personality:"真面目・公平・照れ屋・好奇心旺盛", color:"ワインレッド・翠・黒", likes:"ミコト・ミウ・みんな・黒猫・謎解き", feature:"猫耳・尻尾・観察・整理・判定" },
+      { id:"yura", emoji:"💜👻", name:"ユラ💜👻", species:"幽霊族・8歳相当", quote:"「そばにいても、いい……？」", description:"白藤から淡紫の霧へ溶ける髪を持ち、ふわりと宙に浮かぶ儚げな幽霊族。", personality:"おっとり・天然・寂しがり・臆病", color:"藤・白・淡水色", likes:"みんな・ぬいぐるみ・月夜・プリン", feature:"浮遊・壁抜け・半透明・幽火" },
+      { id:"moko", emoji:"☁️🌈", name:"モコ☁️🌈", species:"綿雲族・8歳", quote:"「だいじょーぶだよ〜☁️」", description:"白から空色へ変わるふわふわの髪と虹環の瞳を持つ、雲のような女の子。", personality:"超マイペース・楽天家・好奇心・忘れんぼ", color:"白・空色・虹色", likes:"空・虹・昼寝・わたあめ・みんな", feature:"雲生成・雲乗り飛行・浮遊・霧雨・風" },
+      { id:"nene", emoji:"🎵🔔", name:"ネネ🎵🔔", species:"音精族・8歳", quote:"「いい音、みーつけた♬」", description:"淡藤銀の髪先に水色と桃色を宿し、音を光として見る音精族の女の子。", personality:"おっとり・感受性豊か・収集好き・照れ屋", color:"藤・白・淡水色", likes:"音楽・鈴・雨音・みんなの笑い声", feature:"音視・音晶化・再生・探知・消音" },
+      { id:"mira", emoji:"🪞💎", name:"ミラ🪞💎", species:"鏡渡族・8歳", quote:"「捕まえられるなら捕まえてみて！🪞」", description:"青紫から銀へ変わる髪と菱形の光を宿す瞳を持つ、機転の利く鏡渡族。", personality:"強気・機転・悪戯好き・負けず嫌い", color:"青紫・銀・白", likes:"鏡・宝石・かくれんぼ・謎解き", feature:"鏡渡り・鏡覗き・鏡像分身・鏡収納" }
+    ];
+
+    const imageCount = 3;
+
+    function characterImages(character) {
+      return Array.from({length:imageCount}, (_,i) =>
+        `images/${character.id}/${String(i+1).padStart(3,"0")}.jpg`
+      );
+    }
+
+    function makeTop() {
+      const list = document.getElementById("topList");
+      characters.forEach(character => {
+        const button = document.createElement("button");
+        button.className = "character-button";
+        button.innerHTML = `<span class="emoji">${character.emoji}</span><span class="name">${character.name}</span>`;
+        button.onclick = () => showCharacter(character.id);
+        list.appendChild(button);
+      });
+    }
+
+    function showTop() {
+      document.getElementById("detailPage").classList.remove("active");
+      document.getElementById("topPage").classList.add("active");
+      history.replaceState(null,"","#top");
+      window.scrollTo(0,0);
+    }
+
+    function showCharacter(id) {
+      const character = characters.find(item => item.id === id);
+      if (!character) return;
+      document.getElementById("portrait").textContent = character.emoji;
+      document.getElementById("characterName").textContent = character.name;
+      document.getElementById("species").textContent = character.species;
+      document.getElementById("quote").textContent = character.quote;
+      document.getElementById("description").textContent = character.description;
+      document.getElementById("personality").textContent = character.personality;
+      document.getElementById("color").textContent = character.color;
+      document.getElementById("likes").textContent = character.likes;
+      document.getElementById("feature").textContent = character.feature;
+      document.getElementById("galleryTitle").textContent = `🖼️ ${character.name}の画像ギャラリー`;
+      createGallery(character);
+      document.getElementById("topPage").classList.remove("active");
+      document.getElementById("detailPage").classList.add("active");
+      history.replaceState(null,"",`#${id}`);
+      window.scrollTo(0,0);
+    }
+
+    function createGallery(character) {
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTML = "";
+      characterImages(character).forEach((path,index) => {
+        const box = document.createElement("div");
+        box.className = "image-box";
+        const image = document.createElement("img");
+        image.className = "gallery-image";
+        image.src = path;
+        image.alt = `${character.name}の画像${index+1}`;
+        image.loading = "lazy";
+        image.onclick = () => openImage(path,image.alt);
+        image.onerror = () => {
+          box.innerHTML = `<div class="image-error">画像をここへ追加<br>${path}</div>`;
+        };
+        box.appendChild(image);
+        gallery.appendChild(box);
+      });
+    }
+
+    function openImage(path,alt) {
+      const modal = document.getElementById("imageModal");
+      const image = document.getElementById("largeImage");
+      image.src = path;
+      image.alt = alt;
+      modal.classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeImage() {
+      document.getElementById("imageModal").classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    makeTop();
+    const firstId = location.hash.replace("#","");
+    if (firstId && firstId !== "top") showCharacter(firstId);
+  </script>
+</body>
+</html>

@@ -27,6 +27,12 @@
     .species { color:var(--sub); font-size:14px; }
     .quote { margin-top:8px; font-weight:700; }
     .description { line-height:1.65; margin:20px 0 0; }
+    .school-sections { max-width:760px; margin:18px auto; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .school-card { padding:18px; border-radius:18px; background:var(--card); box-shadow:0 4px 18px #00000014; }
+    .school-card h3 { margin:0 0 10px; font-size:20px; }
+    .school-card p { margin:0; line-height:1.7; }
+    .school-palette { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+    .palette-chip { padding:5px 9px; border:1px solid #ddd; border-radius:999px; background:#fafafa; font-size:12px; }
     .info { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px; }
     .info-box { min-width:0; padding:12px; border-radius:13px; background:#f5f6f8; }
     .info-title { display:block; margin-bottom:4px; color:#888; font-size:12px; }
@@ -50,6 +56,7 @@
       .portrait { width:78px; height:78px; flex-basis:78px; font-size:39px; }
       .profile h2 { font-size:23px; }
       .info { grid-template-columns:1fr; }
+      .school-sections { grid-template-columns:1fr; }
       .gallery { gap:7px; }
     }
   </style>
@@ -61,6 +68,28 @@
     <div class="subtitle">Character Archive</div>
     <div id="topList" class="top-list"></div>
     <div class="footer">色彩のファンタジー Character Archive</div>
+  </main>
+
+  <!-- 虹羽女子学園の設定ページ -->
+  <main id="schoolPage" class="page">
+    <h1 class="site-title">🌈 色彩のファンタジー図鑑</h1>
+    <div class="subtitle">Nijibane Girls' Academy</div>
+    <div class="detail-header"><button class="back-button" onclick="showTop()">← TOPに戻る</button></div>
+    <section class="profile">
+      <div class="profile-top">
+        <div class="portrait">🏫🌈</div>
+        <div>
+          <h2>虹羽女子学園</h2>
+          <div class="species">多種族・多個性が共に学ぶ女子学園</div>
+          <div class="quote">「違う色が集まって、ひとつの虹になる。」</div>
+        </div>
+      </div>
+      <p class="description">人間、獣人、精霊族など、さまざまな種族と個性を持つ生徒たちが互いを尊重しながら学ぶ学園。アイボリーとアッシュブラウンを基調に、淡い虹色を学園らしいアクセントとして取り入れている。</p>
+    </section>
+    <div id="schoolSections" class="school-sections"></div>
+    <h3 class="gallery-title">🖼️ 虹羽女子学園の設定資料</h3>
+    <div id="schoolGallery" class="gallery"></div>
+    <div class="footer">色彩のファンタジー Nijibane Girls' Academy</div>
   </main>
 
   <!-- キャラクター詳細ページ -->
@@ -119,6 +148,8 @@
       { id:"sera", emoji:"🪽✨", name:"セラ🪽✨", species:"天使族・25歳", quote:"「お任せくださいっ！」", description:"白金から淡金に変わる髪と大きな白い翼を持つ、華やかで明るい天使。", personality:"超前向き・世話好き・素直・ドジ", color:"白・淡金・空色", likes:"みんな・青空・甘いパン・歌・人助け", feature:"治癒・浄化・飛行・発光・歌" },
       { id:"koyomi", emoji:"🗓️⌛", name:"コヨミ🗓️⌛", species:"時巡族・25歳", quote:"「……それ今やるの？」", description:"淡銀茶の髪先に四季の色を宿した、気怠げなジト目の時巡族。", personality:"省エネ・冷静・面倒臭がり・世話焼き", color:"白金・春桃・夏青・秋橙・冬銀", likes:"季節・昼寝・手帳", feature:"暦読み・季節察知・記憶・四季巡環" },
       { id:"sui", emoji:"💚💎", name:"楔石 翠💚💎", species:"珠魅族・24歳", quote:"「私にお任せください」", description:"オリーブ茶から翠へ変わる髪と、胸元にスフェーンの核石を持つ凛麗な珠魅族。", personality:"生真面目・責任感・努力家・芯が強い", color:"翠・象牙・金・虹色", likes:"宝石・木漏れ日・虹・美術館・お茶", feature:"分光・屈折・七彩光・晶盾・虹晶" },
+      { id:"futaba", emoji:"🪶", name:"ふたば🪶", species:"人間・成人", quote:"「気になる世界、もっと集めよっ！」", description:"腰丈のミルクブラウンのふわふわロングと黒いリボン、ブラウンからローズ金へ輝く瞳を持つ、小柄で親しみやすい世界収集家。", personality:"好奇心旺盛・マイペース・人懐こい・遊び好き", color:"茶・黒・金", likes:"ゲーム・創作・キャラクター・可愛い物・音楽", feature:"世界採集・連想からの発想・能力時に淡金の羽根が輝く" },
+      { id:"shion", emoji:"🌑🫥", name:"シオン🌑🫥", species:"闇影族・外見25歳", quote:"「……ふふ。私はここよ」", description:"腰手前までの黒紫の髪が毛先で霧へ溶け、月白から淡紫に光る瞳を持つ、幻想的で儚げな闇影族。普段は非実体だが、ふたばだけが触れられる。", personality:"物静か・マイペース・観察好き・悪戯好き", color:"黒・濃紫・月白", likes:"月夜・暗所・雨音・影・夜更かし", feature:"霧影化・影渡り・影潜り・散霧・再影成・影写し" },
       { id:"haru", emoji:"🩷", name:"ハル🩷", species:"人間・8歳", quote:"「えへへっ、わたしに任せて♡」", description:"ミルクティー茶のふわふわ髪と左右の編み込みが可愛い、背伸びしたがりの女の子。", personality:"しっかり者・世話好き・優しい・背伸び屋", color:"ピンク・アイボリー", likes:"ぬいぐるみ・甘味・文具・動物・ナツ", feature:"片付け・ぬいぐるみのお世話" },
       { id:"rim", emoji:"💚🐾", name:"リム💚🐾", species:"猫獣人・8歳", quote:"「探検に出発するニャ！」", description:"銀灰色の外ハネ髪と翠の大きな猫目を持つ、元気いっぱいな猫獣人の女の子。", personality:"元気・好奇心旺盛・悪戯好き・意外と冷静", color:"翠・黒・銀", likes:"ミウ・ミコト・みんな・動物・探検", feature:"猫耳・尻尾・忍足・木登り・探索" },
       { id:"chloe", emoji:"🖤🐈‍⬛", name:"クロエ🖤🐈‍⬛", species:"猫獣人・8歳", quote:"「審議します！ セーフです！」", description:"艶やかな黒髪と赤紫の大きな瞳を持つ、真面目で小さな審査官。", personality:"真面目・公平・照れ屋・好奇心旺盛", color:"ワインレッド・翠・黒", likes:"ミコト・ミウ・みんな・黒猫・謎解き", feature:"猫耳・尻尾・観察・整理・判定" },
@@ -127,6 +158,16 @@
       { id:"nene", emoji:"🎵🔔", name:"ネネ🎵🔔", species:"音精族・8歳", quote:"「いい音、みーつけた♬」", description:"淡藤銀の髪先に水色と桃色を宿し、音を光として見る音精族の女の子。", personality:"おっとり・感受性豊か・収集好き・照れ屋", color:"藤・白・淡水色", likes:"音楽・鈴・雨音・みんなの笑い声", feature:"音視・音晶化・再生・探知・消音" },
       { id:"mira", emoji:"🪞💎", name:"ミラ🪞💎", species:"鏡渡族・8歳", quote:"「捕まえられるなら捕まえてみて！🪞」", description:"青紫から銀へ変わる髪と菱形の光を宿す瞳を持つ、機転の利く鏡渡族。", personality:"強気・機転・悪戯好き・負けず嫌い", color:"青紫・銀・白", likes:"鏡・宝石・かくれんぼ・謎解き", feature:"鏡渡り・鏡覗き・鏡像分身・鏡収納" }
     ];
+
+    const school = {
+      id:"academy", emoji:"🏫🌈", name:"虹羽女子学園", kind:"school",
+      sections:[
+        { title:"☀️ 夏制服", text:"涼やかなアイボリーの半袖ブラウスを中心に、薄いアッシュブラウンのプリーツスカートを合わせる。襟元には生徒それぞれの個性を映す淡色のボウタイ。胸元には校章ワッペンを付け、軽やかで清潔感のある夏仕様。", colors:["アイボリー","薄アッシュブラウン","淡色ボウタイ"] },
+        { title:"❄️ 冬制服", text:"アイボリー系のブレザーに、保温性のある薄アッシュブラウンのプリーツスカートを合わせる。ブラウスと淡色ボウタイは夏服と共通し、校章入りの胸ワッペンと深みのある茶色の縁取りで統一感を出す。", colors:["アイボリー","アッシュブラウン","こげ茶"] },
+        { title:"🏊‍♀️ 学園水着", text:"白と淡い虹色を基調にした、動きやすく健全な学園指定のワンピース型水着。胸元に小さな羽根のマーク、脇のラインに七色のグラデーションを配し、種族ごとの身体的特徴にも対応できる設計。", colors:["白","淡い虹色","空色"] },
+        { title:"🪽 校章", text:"羽根、虹、星、月桂樹を組み合わせた紋章。虹色の羽根と星は多様な個性と未来を、月桂樹は学びと成長を表す。制服では茶色地にこげ茶の線でまとめた胸ワッペンとして使用する。", colors:["虹色","茶色地","こげ茶"] }
+      ]
+    };
 
     const imageCount = 3;
 
@@ -138,17 +179,18 @@
 
     function makeTop() {
       const list = document.getElementById("topList");
-      characters.forEach(character => {
+      [...characters, school].forEach(character => {
         const button = document.createElement("button");
         button.className = "character-button";
         button.innerHTML = `<span class="emoji">${character.emoji}</span><span class="name">${character.name}</span>`;
-        button.onclick = () => showCharacter(character.id);
+        button.onclick = () => character.kind === "school" ? showSchool() : showCharacter(character.id);
         list.appendChild(button);
       });
     }
 
     function showTop() {
       document.getElementById("detailPage").classList.remove("active");
+      document.getElementById("schoolPage").classList.remove("active");
       document.getElementById("topPage").classList.add("active");
       history.replaceState(null,"","#top");
       window.scrollTo(0,0);
@@ -169,9 +211,50 @@
       document.getElementById("galleryTitle").textContent = `🖼️ ${character.name}の画像ギャラリー`;
       createGallery(character);
       document.getElementById("topPage").classList.remove("active");
+      document.getElementById("schoolPage").classList.remove("active");
       document.getElementById("detailPage").classList.add("active");
       history.replaceState(null,"",`#${id}`);
       window.scrollTo(0,0);
+    }
+
+    function showSchool() {
+      const sections = document.getElementById("schoolSections");
+      sections.innerHTML = school.sections.map(section => `
+        <section class="school-card">
+          <h3>${section.title}</h3>
+          <p>${section.text}</p>
+          <div class="school-palette">${section.colors.map(color => `<span class="palette-chip">${color}</span>`).join("")}</div>
+        </section>
+      `).join("");
+      createSchoolGallery();
+      document.getElementById("topPage").classList.remove("active");
+      document.getElementById("detailPage").classList.remove("active");
+      document.getElementById("schoolPage").classList.add("active");
+      history.replaceState(null,"","#academy");
+      window.scrollTo(0,0);
+    }
+
+    function createSchoolGallery() {
+      const gallery = document.getElementById("schoolGallery");
+      const items = [
+        ["summer-uniform","夏制服"], ["winter-uniform","冬制服"],
+        ["swimsuit","学園水着"], ["emblem","校章"]
+      ];
+      gallery.innerHTML = "";
+      items.forEach(([file,label]) => {
+        const path = `images/academy/${file}.jpg`;
+        const box = document.createElement("div");
+        box.className = "image-box";
+        const image = document.createElement("img");
+        image.className = "gallery-image";
+        image.src = path;
+        image.alt = `虹羽女子学園 ${label}`;
+        image.loading = "lazy";
+        image.onclick = () => openImage(path,image.alt);
+        image.onerror = () => { box.innerHTML = `<div class="image-error">${label}<br>画像をここへ追加<br>${path}</div>`; };
+        box.appendChild(image);
+        gallery.appendChild(box);
+      });
     }
 
     function createGallery(character) {
@@ -210,7 +293,8 @@
 
     makeTop();
     const firstId = location.hash.replace("#","");
-    if (firstId && firstId !== "top") showCharacter(firstId);
+    if (firstId === "academy") showSchool();
+    else if (firstId && firstId !== "top") showCharacter(firstId);
   </script>
 </body>
 </html>
